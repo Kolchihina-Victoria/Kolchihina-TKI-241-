@@ -1,104 +1,181 @@
-#include <iostream>
-#include <vector>
-#include <set>
-#include <map>
-#include <algorithm>
+#include <iostream>      
+#include <fstream>       // Для работы с файлами
+#include <vector>        
+#include <algorithm>     
+#include <functional>    // Для bind и placeholders
+#include <string>        
 
-/**
- * @brief Функциональный объект для вывода количества повторений элементов
- * 
- * Этот функтор используется с алгоритмом for_each для множества уникальных элементов.
- * Для каждого элемента из множества S он подсчитывает количество его вхождений
- * в мультимножество M и выводит результат.
- */
-class PrintElementCount {
-private:
-    const std::multiset<int>& m_multiset; ///< Ссылка на мультимножество с повторениями
+using namespace std;
+using namespace std::placeholders;  // Для плейсхолдеров _1, _2, _3...
+
+// Структуры
+struct point {
+    int x;          // Координата X 
+    int y;          // Координата Y 
+    std::string s;  // Строковая метка (без пробелов)
     
-public:
-    /**
-     * @brief Конструктор функционального объекта
-     * @param ms Ссылка на мультимножество, содержащее все элементы с повторениями
-     */
-    PrintElementCount(const std::multiset<int>& ms) : m_multiset(ms) {}
-    
-    /**
-     * @brief Оператор вызова для обработки одного элемента
-     * @param element Уникальный элемент для обработки
-     * 
-     * Подсчитывает количество вхождений элемента в мультимножестве
-     * и выводит элемент вместе с его количеством повторений.
-     */
-    void operator()(int element) const {
-        // Функция count возвращает количество элементов, равных заданному
-        int count = m_multiset.count(element);
-        std::cout << element << " : " << count << std::endl;
-    }
+    point mult(int k) const;
 };
 
-/**
- * @brief Выводит все различные элементы вектора с количеством их повторений
- * @param V Исходный вектор целых чисел
- * 
- * Функция создает мультимножество M (хранит все элементы с повторениями)
- * и множество S (хранит только уникальные элементы) на основе вектора V.
- * Затем с помощью for_each и функционального объекта выводит каждый
- * уникальный элемент вместе с количеством его вхождений.
- * Результат выводится в порядке возрастания значений элементов.
- */
-void printElementCounts(const std::vector<int>& V) {
-    if (V.empty()) {
-        std::cout << "Вектор пуст" << std::endl;
-        return;
-    }
-    
-   
-    std::multiset<int> M(V.begin(), V.end());
-    
-    
-    std::set<int> S(V.begin(), V.end());
-    
-    // Применяем for_each к каждому уникальному элементу из S
-    // Функциональный объект PrintElementCount будет выводить результат
-    std::for_each(S.begin(), S.end(), PrintElementCount(M));
-}
+// Функциональные объекты
+struct point_plus {
+    point operator()(const point& a, const point& b) const;
+};
+
+// Прототипы функций
+std::istream& operator>>(std::istream& is, point& p);
+std::ostream& operator<<(std::ostream& os, const point& p);
+vector<point> readPointsFromFile(const string& filename);
+void processPoints(vector<point>& V1, const vector<point>& V2, int K);
+void displayResults(const vector<point>& V1);
 
 /**
  * @brief Главная функция программы
- * @return 0 при успешном выполнении
- * 
- * Демонстрирует работу функции printElementCounts на примерах
+ * @return завершение программы (0 - успех, 1 - ошибка)
  */
 int main() {
-    // Пример 1: Вектор с повторяющимися элементами
-    std::vector<int> V1 = {5, 2, 8, 2, 5, 5, 3, 8, 1, 2};
+    int K;           // Множитель для преобразования точек
+    string name1;    // Имя первого файла
+    string name2;    // Имя второго файла
+
+    cout << "Введите число K: ";
+    cin >> K;
+    cout << "Введите имя первого файла: ";
+    cin >> name1;
+    cout << "Введите имя второго файла: ";
+    cin >> name2;
     
-    std::cout << "Исходный вектор V1: ";
-    for (int num : V1) {
-        std::cout << num << " ";
+    // Чтение точек из файлов
+    vector<point> V1 = readPointsFromFile(name1);
+    if (V1.empty() && !ifstream(name1).is_open()) {
+        return 1;
     }
-    std::cout << "\n\nРезультат (элемент : количество повторений):\n";
-    printElementCounts(V1);
     
-    std::cout << "\n" << std::string(30, '-') << "\n\n";
-    
-    // Пример 2: Вектор с одним элементом
-    std::vector<int> V2 = {42, 42, 42};
-    
-    std::cout << "Исходный вектор V2: ";
-    for (int num : V2) {
-        std::cout << num << " ";
+    vector<point> V2 = readPointsFromFile(name2);
+    if (V2.empty() && !ifstream(name2).is_open()) {
+        return 1;
     }
-    std::cout << "\n\nРезультат (элемент : количество повторений):\n";
-    printElementCounts(V2);
     
-    std::cout << "\n" << std::string(30, '-') << "\n\n";
+    // Проверка размеров векторов
+    if (V1.size() != V2.size()) {
+        cerr << "Ошибка: файлы содержат разное количество элементов!" << endl;
+        cerr << "В первом файле: " << V1.size() << " элементов" << endl;
+        cerr << "Во втором файле: " << V2.size() << " элементов" << endl;
+        return 1; 
+    }
     
-    // Пример 3: Пустой вектор
-    std::vector<int> V3;
+    // Обработка точек
+    processPoints(V1, V2, K);
     
-    std::cout << "Исходный вектор V3: пуст\n\n";
-    printElementCounts(V3);
+    // Вывод результатов
+    displayResults(V1);
     
-    return 0;
+    return 0;  
+}
+
+
+/**
+ * @brief Умножение точки на целое число
+ * @param k Множитель (целое число)
+ * @return Новая точка, полученная умножением координат на k
+ */
+point point::mult(int k) const {
+    point result;
+    result.x = k * this->x;
+    result.y = k * this->y;
+    result.s = this->s;
+    return result;
+}
+
+/**
+ * @brief Оператор вызова функтора point_plus
+ * @param a Первая точка
+ * @param b Вторая точка
+ * @return Результат сложения a и b
+ */
+point point_plus::operator()(const point& a, const point& b) const {
+    point result;
+    result.x = a.x + b.x;
+    result.y = a.y + b.y;
+    result.s = a.s + b.s;  // Конкатенация строк
+    return result;
+}
+
+/**
+ * @brief Оператор ввода для структуры point
+ * @param is Входной поток
+ * @param p Ссылка на объект point для заполнения
+ * @return Ссылка на входной поток
+ */
+std::istream& operator>>(std::istream& is, point& p) {
+    is >> p.x >> p.y >> p.s;
+    return is;
+}
+
+/**
+ * @brief Оператор вывода для структуры point
+ * @param os Выходной поток
+ * @param p Константная ссылка на объект point
+ * @return Ссылка на выходной поток
+ */
+std::ostream& operator<<(std::ostream& os, const point& p) {
+    os << p.x << " " << p.y << " " << p.s;
+    return os;
+}
+
+/**
+ * @brief Чтение точек из файла
+ * @param filename Имя файла для чтения
+ * @return Вектор точек, прочитанных из файла
+ */
+vector<point> readPointsFromFile(const string& filename) {
+    vector<point> points;
+    ifstream file(filename);
+    
+    if (!file.is_open()) {
+        cerr << "Ошибка: не удалось открыть файл " << filename << endl;
+        return points;  // Возвращаем пустой вектор
+    }
+    
+    point temp;
+    while (file >> temp) {
+        points.push_back(temp);
+    }
+    file.close();
+    
+    return points;
+}
+
+/**
+ * @brief Обработка векторов точек
+ * @param V1 Первый вектор (будет изменен)
+ * @param V2 Второй вектор (константный)
+ * @param K Множитель для преобразования
+ * 
+ * Выполняет преобразование: V1[i] = point_plus()(V1[i].mult(K), V2[i])
+ */
+void processPoints(vector<point>& V1, const vector<point>& V2, int K) {
+    transform(V1.begin(), V1.end(), V2.begin(), V1.begin(),
+        bind(point_plus(),                   
+            bind(&point::mult, _1, K),        // Первый аргумент: V1[i].mult(K)
+            _2)                               // Второй аргумент: V2[i]
+    );
+}
+
+/**
+ * @brief Вывод результатов на экран
+ * @param V1 Вектор обработанных точек
+ */
+void displayResults(const vector<point>& V1) {
+    cout << "\n========================================" << endl;
+    cout << "Результат преобразования вектора V1:" << endl;
+    cout << "========================================\n" << endl;
+    
+    for (size_t i = 0; i < V1.size(); ++i) {
+        cout << "Точка " << i + 1 << ": " << V1[i] << endl;
+    }
+    
+    cout << "\n========================================" << endl;
+    cout << "Всего обработано точек: " << V1.size() << endl;
+    cout << "========================================" << endl;
 }
