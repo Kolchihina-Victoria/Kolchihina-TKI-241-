@@ -10,9 +10,9 @@
  */
 class ProgressionGenerator {
 private:
-    double first;   ///< Первый член прогрессии (A)
-    double diff;    ///< Разность прогрессии (D)
-    int counter;    ///< Счетчик вызовов (0, 1, 2...)
+    double first;   //Первый член прогрессии
+    double diff;    //Разность прогрессии
+    int counter;    //Счетчик вызовов (0, 1, 2...)
     
 public:
     /**
@@ -32,14 +32,46 @@ public:
     }
 };
 
+// Прототипы функций (объявления)
+void printArithmeticProgression(double first_param, double diff_param, int count, std::ostream& os = std::cout);
+
+/**
+ * @brief Главная функция программы
+ * 
+ * Запрашивает у пользователя параметры прогрессии и выводит
+ * первые N членов в консоль
+ * 
+ * @return int 0 при успешном выполнении
+ */
+int main() {
+    double first_param = 0.0;  //Первый член прогрессии (инициализирован)
+    double diff_param = 0.0;   //Разность прогрессии (инициализирована)
+    int count = 0;             //Количество членов (инициализировано)
+    
+    // Ввод данных
+    std::cout << "Введите первый член прогрессии: ";
+    std::cin >> first_param;
+    
+    std::cout << "Введите разность прогрессии: ";
+    std::cin >> diff_param;
+    
+    std::cout << "Введите количество членов: ";
+    std::cin >> count;
+    
+    // Вывод прогрессии
+    printArithmeticProgression(first_param, diff_param, count);
+    
+    return 0;
+}
+
 /**
  * @brief Выводит N членов арифметической прогрессии
- * @param A Первый член прогрессии
- * @param D Разность прогрессии
- * @param N Количество членов для вывода
+ * @param first_param Первый член прогрессии
+ * @param diff_param Разность прогрессии
+ * @param count Количество членов для вывода
  * @param os Поток вывода (по умолчанию std::cout)
  */
-void printArithmeticProgression(double A, double D, int N, std::ostream& os = std::cout) {
+void printArithmeticProgression(double first_param, double diff_param, int count, std::ostream& os) {
     /**
      * @brief Итератор вывода для потока os
      * 
@@ -51,7 +83,7 @@ void printArithmeticProgression(double A, double D, int N, std::ostream& os = st
     /**
      * @brief Генератор членов прогрессии
      */
-    ProgressionGenerator generator(A, D);
+    ProgressionGenerator generator(first_param, diff_param);
     
     /**
      * @brief Генерация и вывод N членов
@@ -59,35 +91,7 @@ void printArithmeticProgression(double A, double D, int N, std::ostream& os = st
      * Алгоритм generate_n вызывает генератор N раз и выводит
      * результаты через итератор out_it
      */
-    std::generate_n(out_it, N, generator);
+    std::generate_n(out_it, count, generator);
     
     os << std::endl;
-}
-
-/**
- * @brief Главная функция программы
- * 
- * Запрашивает у пользователя параметры прогрессии и выводит
- * первые N членов в консоль
- * 
- * @return int 0 при успешном выполнении
- */
-int main() {
-    double A, D;  ///< Параметры прогрессии
-    int N;        ///< Количество членов
-    
-    // Ввод данных
-    std::cout << "Введите первый член прогрессии A: ";
-    std::cin >> A;
-    
-    std::cout << "Введите разность прогрессии D: ";
-    std::cin >> D;
-    
-    std::cout << "Введите количество членов N: ";
-    std::cin >> N;
-    
-    // Вывод прогрессии
-    printArithmeticProgression(A, D, N);
-    
-    return 0;
 }
