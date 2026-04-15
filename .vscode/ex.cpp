@@ -20,25 +20,25 @@ void printSeparator(char symbol = '-', int length = 30);
  */
 int main() {
     vector<int> V;
-    
+
     printSeparator('=', 40);
     cout << "   Подсчет повторений элементов вектора" << endl;
     printSeparator('=', 40);
-    
+
     // Ввод вектора с клавиатуры (исправление ошибки 1)
     inputVector(V);
-    
+
     // Вывод исходного вектора с помощью отдельной функции (исправление ошибки 2)
     cout << "\nИсходный вектор: ";
     printVector(V);
-    
+
     // Вывод результата
     cout << "\nРезультат (элемент : количество повторений):\n";
     printElementCounts(V);
-    
+
     printSeparator();
     cout << "Программа успешно завершена" << endl;
-    
+
     return 0;
 }
 
@@ -47,19 +47,11 @@ int main() {
  * @param vec Ссылка на вектор для заполнения
  */
 void inputVector(vector<int>& vec) {
-    int n, value;
-    
-    cout << "Введите количество элементов: ";
-    cin >> n;
-    
-    if (n <= 0) {
-        cout << "Вектор будет пустым" << endl;
-        return;
-    }
-    
-    cout << "Введите " << n << " целых чисел через пробел: ";
-    for (int i = 0; i < n; i++) {
-        cin >> value;
+    int value;
+
+    cout << "Введите целые числа (Ctrl+D / Ctrl+Z для завершения): ";
+
+    while (cin >> value) {
         vec.push_back(value);
     }
 }
@@ -68,12 +60,13 @@ void inputVector(vector<int>& vec) {
  * @brief Выводит содержимое вектора на экран
  * @param vec Константная ссылка на вектор
  */
+//исправленная часть кода (нет привязки к числу n и читается из потока ввода от начала до конца)
 void printVector(const vector<int>& vec) {
     if (vec.empty()) {
         cout << "пуст";
         return;
     }
-    
+
     for (int value : vec) {
         cout << value << " ";
     }
@@ -94,10 +87,10 @@ void printElementCounts(const vector<int>& V) {
         cout << "Вектор пуст" << endl;
         return;
     }
-    
+
     // Создаем множество уникальных элементов
     set<int> S(V.begin(), V.end());
-    
+
     // Для каждого уникального элемента считаем количество повторений
     for (int element : S) {
         // Подсчитываем количество вхождений элемента в вектор
