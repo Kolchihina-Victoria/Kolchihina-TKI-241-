@@ -4,6 +4,7 @@
 #include <algorithm>     
 #include <functional>    // Для bind и placeholders
 #include <string>        
+#include <iterator>      // добавлено для итераторов(исправленная ошибка)
 
 using namespace std;
 using namespace std::placeholders;  // Для плейсхолдеров _1, _2, _3...
@@ -26,7 +27,7 @@ struct point_plus {
 std::istream& operator>>(std::istream& is, point& p);
 std::ostream& operator<<(std::ostream& os, const point& p);
 vector<point> readPointsFromFile(const string& filename);
-void processPoints(vector<point>& V1, const vector<point>& V2, int K);
+void processPoints(vector<point>& V1, const vector<point>& V2, const int K); //исправленная ошибка(добавила const)
 void displayResults(const vector<point>& V1);
 
 /**
@@ -34,7 +35,7 @@ void displayResults(const vector<point>& V1);
  * @return завершение программы (0 - успех, 1 - ошибка)
  */
 int main() {
-    int K;           // Множитель для преобразования точек
+    int K = 0;           // Множитель для преобразования точек(также исправленная ошибка,иницилизировала переменную)
     string name1;    // Имя первого файла
     string name2;    // Имя второго файла
 
@@ -137,12 +138,10 @@ vector<point> readPointsFromFile(const string& filename) {
         return points;  // Возвращаем пустой вектор
     }
     
-    point temp;
-    while (file >> temp) {
-        points.push_back(temp);
-    }
-    file.close();
+    // чтение через итераторы (без явного цикла ,исправила-без цикла ,с итератором)
+    copy(istream_iterator<point>(file), istream_iterator<point>(), back_inserter(points));
     
+    file.close();
     return points;
 }
 
@@ -154,7 +153,7 @@ vector<point> readPointsFromFile(const string& filename) {
  * 
  * Выполняет преобразование: V1[i] = point_plus()(V1[i].mult(K), V2[i])
  */
-void processPoints(vector<point>& V1, const vector<point>& V2, int K) {
+void processPoints(vector<point>& V1, const vector<point>& V2, const int K) {
     transform(V1.begin(), V1.end(), V2.begin(), V1.begin(),
         bind(point_plus(),                   
             bind(&point::mult, _1, K),        // Первый аргумент: V1[i].mult(K)
