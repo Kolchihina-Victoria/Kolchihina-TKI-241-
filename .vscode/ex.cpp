@@ -49,7 +49,7 @@ int main() {
 //исправленная часть кода (нет привязки к числу n и читается из потока ввода от начала до конца)
 void inputVector(vector<int>& vec) {
     int value;
-
+//вывод
     cout << "Введите целые числа (Ctrl+D / Ctrl+Z для завершения): ";
 
     while (cin >> value) {
