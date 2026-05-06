@@ -15,7 +15,7 @@ struct point {
     int y;          // Координата Y 
     std::string s;  // Строковая метка (без пробелов)
     
-    point mult(int k) const;
+    point mult(const int k) const;
 };
 
 // Функциональные объекты
