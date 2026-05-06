@@ -7,9 +7,30 @@
 using namespace std;
 
 // Прототипы функций
+
+/**
+ * @brief Вводит элементы вектора из потока ввода
+ * @param vec Ссылка на вектор для заполнения
+ */
 void inputVector(vector<int>& vec);
+
+/**
+ * @brief Выводит содержимое вектора
+ * @param vec Константная ссылка на вектор
+ */
 void printVector(const vector<int>& vec);
+
+/**
+ * @brief Выводит количество повторений элементов вектора
+ * @param V Исходный вектор
+ */
 void printElementCounts(const vector<int>& V);
+
+/**
+ * @brief Выводит разделительную линию
+ * @param symbol Символ разделителя
+ * @param length Длина линии
+ */
 void printSeparator(char symbol = '-', int length = 30);
 
 /**
@@ -25,10 +46,10 @@ int main() {
     cout << "   Подсчет повторений элементов вектора" << endl;
     printSeparator('=', 40);
 
-    // Ввод вектора с клавиатуры (исправление ошибки 1)
+    // Ввод вектора с клавиатуры
     inputVector(V);
 
-    // Вывод исходного вектора с помощью отдельной функции (исправление ошибки 2)
+    // Вывод исходного вектора с помощью отдельной функции
     cout << "\nИсходный вектор: ";
     printVector(V);
 
@@ -45,13 +66,16 @@ int main() {
 /**
  * @brief Вводит элементы вектора с клавиатуры
  * @param vec Ссылка на вектор для заполнения
+ * 
+ * Чтение выполняется из потока ввода от начала до конца (до EOF).
  */
-//исправленная часть кода (нет привязки к числу n и читается из потока ввода от начала до конца)
 void inputVector(vector<int>& vec) {
-    int value;
-//вывод
+    int value = 0;
+
+    // вывод
     cout << "Введите целые числа (Ctrl+D / Ctrl+Z для завершения): ";
 
+    // читаем из потока от начала до конца
     while (cin >> value) {
         vec.push_back(value);
     }
@@ -79,8 +103,7 @@ void printVector(const vector<int>& vec) {
  * Функция создает множество S (хранит только уникальные элементы) на основе вектора V.
  * Затем для каждого уникального элемента подсчитывает количество его вхождений.
  * Результат выводится в порядке возрастания значений элементов.
- * 
- * Исправление ошибки 4: лишний класс, используется простая функция
+
  */
 void printElementCounts(const vector<int>& V) {
     if (V.empty()) {
@@ -95,11 +118,13 @@ void printElementCounts(const vector<int>& V) {
     for (int element : S) {
         // Подсчитываем количество вхождений элемента в вектор
         int count = 0;
+
         for (int value : V) {
             if (value == element) {
                 count++;
             }
         }
+
         cout << element << " : " << count << endl;
     }
 }
@@ -110,8 +135,9 @@ void printElementCounts(const vector<int>& V) {
  * @param length Длина разделителя
  */
 void printSeparator(char symbol, int length) {
-    for (int i = 0; i < length; i++) {
+    for (size_t i = 0; i < static_cast<size_t>(length); i++) {
         cout << symbol;
     }
+
     cout << endl;
 }
