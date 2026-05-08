@@ -1,13 +1,13 @@
-#include <iostream>
-#include <vector>
+#include <iostream> // Для ввода и вывода данных
+#include <vector>   // Для использования контейнера vector
 
-using namespace std;
+using namespace std; // Использование стандартного пространства имен
 
 // Прототипы функций
-void inputVector(vector<int>& vec);
-void processVector(vector<int>& vec);
-void displayVector(const vector<int>& vec);
-void printSeparator();
+void inputVector(vector<int>& vec);              // Функция ввода элементов вектора
+void processVector(vector<int>& vec);            // Функция обработки вектора
+void displayVector(const vector<int>& vec);      // Функция вывода вектора
+void printSeparator();                           // Функция вывода разделительной линии
 
 /**
  * @brief Главная функция программы
@@ -19,37 +19,47 @@ void printSeparator();
  *          4. Выводит результат
  */
 int main() {
-    vector<int> numbers;  // Используем стандартный класс vector
+
+    vector<int> numbers;  // Используем стандартный класс vector для хранения чисел
     
-    printSeparator();
-    cout << "    Работа с вектором целых чисел" << endl;
-    printSeparator();
+    printSeparator(); // Вывод разделительной линии
+
+    cout << "    Работа с вектором целых чисел" << endl; // Вывод заголовка программы
+
+    printSeparator(); // Повторный вывод разделительной линии
     
     // Ввод вектора с клавиатуры
-    inputVector(numbers);
+    inputVector(numbers); // Вызов функции ввода элементов
     
     // Вывод исходного вектора
-    cout << "\nИсходный вектор: ";
-    displayVector(numbers);
+    cout << "\nИсходный вектор: "; // Вывод текста перед отображением вектора
+
+    displayVector(numbers); // Вывод исходного вектора
     
     // Операция вставки
-    cout << "\nВставка -1 после каждого элемента..." << endl;
-    processVector(numbers);
+    cout << "\nВставка -1 после каждого элемента..." << endl; // Сообщение о начале обработки
+
+    processVector(numbers); // Вызов функции обработки вектора
     
     // Вывод результата
-    cout << "Результат: ";
-    displayVector(numbers);
+    cout << "Результат: "; // Вывод текста перед результатом
+
+    displayVector(numbers); // Вывод измененного вектора
     
     // Дополнительная информация
-    cout << "\nИнформация об операции:" << endl;
-    cout << "Исходное количество элементов: " << numbers.size() / 2 << endl;
-    cout << "Результирующий размер: " << numbers.size() << endl;
-    cout << "Количество вставок: " << numbers.size() / 2 << endl;
+    cout << "\nИнформация об операции:" << endl; // Заголовок блока информации
+
+    cout << "Исходное количество элементов: " << numbers.size() / 2 << endl; // Вывод исходного размера
+
+    cout << "Результирующий размер: " << numbers.size() << endl; // Вывод нового размера
+
+    cout << "Количество вставок: " << numbers.size() / 2 << endl; // Вывод количества вставленных элементов
     
-    printSeparator();
-    cout << "Программа успешно завершена" << endl;
+    printSeparator(); // Вывод разделительной линии
+
+    cout << "Программа успешно завершена" << endl; // Сообщение об успешном завершении
     
-    return 0;
+    return 0; // Успешное завершение программы
 }
 
 /**
@@ -57,15 +67,20 @@ int main() {
  * @param vec Ссылка на вектор для заполнения
  */
 void inputVector(vector<int>& vec) {
-    int n, value;
+
+    int n, value; // n - количество элементов, value - временная переменная для ввода
     
-    cout << "Введите количество элементов: ";
-    cin >> n;
+    cout << "Введите количество элементов: "; // Запрос количества элементов
+
+    cin >> n; // Ввод количества элементов
     
-    cout << "Введите " << n << " целых чисел через пробел: ";
-    for (int i = 0; i < n; i++) {
-        cin >> value;
-        vec.push_back(value);
+    cout << "Введите " << n << " целых чисел через пробел: "; // Запрос ввода элементов
+
+    for (int i = 0; i < n; i++) { // Цикл ввода элементов
+
+        cin >> value; // Ввод очередного элемента
+
+        vec.push_back(value); // Добавление элемента в конец вектора
     }
 }
 
@@ -76,18 +91,20 @@ void inputVector(vector<int>& vec) {
  *          После каждой вставки итератор корректируется для продолжения обхода.
  */
 void processVector(vector<int>& vec) {
+
     // Получаем итератор на первый элемент вектора
-    auto i = vec.begin();
+    auto i = vec.begin(); // Итератор указывает на начало вектора
     
     // Цикл продолжается, пока не дойдем до конца вектора
-    while (i != vec.end()) {
+    while (i != vec.end()) { // Проверка достижения конца вектора
+
         // Вставляем -1 после текущего элемента
         // insert возвращает итератор на вставленный элемент
-        i = vec.insert(i + 1, -1);
+        i = vec.insert(i + 1, -1); // Вставка -1 после текущего элемента
         
         // Переходим к следующему исходному элементу
         // (пропускаем вставленный -1)
-        ++i;
+        ++i; // Переход к следующему элементу
     }
 }
 
@@ -96,15 +113,19 @@ void processVector(vector<int>& vec) {
  * @param vec Константная ссылка на вектор
  */
 void displayVector(const vector<int>& vec) {
-    for (int value : vec) {
-        cout << value << " ";
+
+    for (int value : vec) { // Цикл перебора всех элементов вектора
+
+        cout << value << " "; // Вывод текущего элемента
     }
-    cout << endl;
+
+    cout << endl; // Переход на новую строку
 }
 
 /**
  * @brief Выводит разделительную линию
  */
 void printSeparator() {
-    cout << "========================================" << endl;
+
+    cout << "========================================" << endl; // Вывод линии-разделителя
 }
